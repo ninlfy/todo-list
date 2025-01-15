@@ -22,8 +22,6 @@ function customAlert() {
     showModal("You must write something!")
 }
 
-
-
 const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 
@@ -53,6 +51,45 @@ listContainer.addEventListener("click", function(e) {
     }
 }, false);
 
+listContainer.addEventListener("dblclick", function(e) {
+    if (e.target.tagName === "LI") {
+        editTask(e.target);
+    }
+}, false);
+
+function editTask(taskElement) {
+    const originalText = taskElement.textContent;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = originalText;
+
+    taskElement.innerHTML = "";
+    taskElement.appendChild(input);
+    input.focus();
+
+    input.addEventListener("blur", function() {
+        const newText = input.value.trim();
+        if (newText !== "") {
+            taskElement.innerHTML = newText;
+            let span = document.createElement("span");
+            span.innerHTML = "\u00d7";
+            taskElement.appendChild(span);
+            saveData();
+        } else {
+            taskElement.innerHTML = originalText;
+            let span = document.createElement("span");
+            span.innerHTML = "\u00d7";
+            taskElement.appendChild(span);
+        }
+    });
+
+    input.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            input.blur();
+        }
+    });
+}
+
 function saveData() {
     localStorage.setItem("data", listContainer.innerHTML);
 }
@@ -62,4 +99,3 @@ function showTask() {
 }
 
 showTask();
-
